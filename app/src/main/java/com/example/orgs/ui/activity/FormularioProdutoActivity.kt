@@ -3,7 +3,7 @@ package com.example.orgs.ui.activity
 import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.example.orgs.dao.ProdutosDao
+import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.extensions.tentaCarregarImagem
 import com.example.orgs.model.Produto
@@ -42,11 +42,13 @@ class FormularioProdutoActivity : AppCompatActivity() {
         campoDescricao: EditText,
         campoValor: EditText
     ) {
-        val dao = ProdutosDao()
+        val db = AppDatabase.instance(this)
+        val produtoDao = db.produtoDao()
+
         val botaoSalvar = binding.botaoSalvar
         botaoSalvar.setOnClickListener {
             val produto = criaProduto(campoNome, campoDescricao, campoValor)
-            dao.adiciona(produto = produto)
+            produtoDao.salva(produto)
             finish()
         }
     }

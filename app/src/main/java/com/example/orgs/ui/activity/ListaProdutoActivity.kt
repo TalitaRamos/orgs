@@ -4,17 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.orgs.constantes.CHAVE_PRODUTO
-import com.example.orgs.dao.ProdutosDao
+import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityListaProdutoBinding
 import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
 
 class ListaProdutoActivity : AppCompatActivity() {
 
-    private val dao = ProdutosDao()
-    private  val adapter = ListaProdutosAdapter(context = this, produtos = dao.buscaTodos())
+    private val adapter = ListaProdutosAdapter(context = this)
 
-    private  val binding by lazy {
+    private val binding by lazy {
         ActivityListaProdutoBinding.inflate(layoutInflater)
     }
 
@@ -27,8 +26,10 @@ class ListaProdutoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val db = AppDatabase.instance(this)
+        val produtoDao = db.produtoDao()
 
-        adapter.atualiza(dao.buscaTodos())
+        adapter.atualiza(produtoDao.buscaTodos())
     }
 
     private fun configuraFab() {
