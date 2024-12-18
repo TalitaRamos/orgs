@@ -22,6 +22,14 @@ class ListaProdutoActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFab()
         setContentView(binding.root)
+
+        adapter.quandoClicaEmEditar = { produto ->
+
+        }
+
+        adapter.quandoClicaEmRemover = { produto ->
+
+        }
     }
 
     override fun onResume() {

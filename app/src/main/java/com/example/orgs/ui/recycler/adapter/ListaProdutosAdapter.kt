@@ -2,9 +2,13 @@ package com.example.orgs.ui.recycler.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.extensions.formataParaMoedaBrasileira
 import com.example.orgs.extensions.tentaCarregarImagem
@@ -13,12 +17,14 @@ import com.example.orgs.model.Produto
 class ListaProdutosAdapter(
     private val context: Context,
     produtos: List<Produto> = emptyList(),
-    var quandoClicaNoItemListener : (produto: Produto) -> Unit = {}
+    var quandoClicaNoItemListener : (produto: Produto) -> Unit = {},
+    var quandoClicaEmEditar: (produto: Produto) -> Unit = {},
+    var quandoClicaEmRemover: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private  val produtos = produtos.toMutableList()
 
-    inner class ViewHolder(binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
 
         private lateinit var produto: Produto
 
@@ -26,6 +32,14 @@ class ListaProdutosAdapter(
             itemView.setOnClickListener {
                 if(::produto.isInitialized) {
                     quandoClicaNoItemListener(produto)
+                }
+            }
+            itemView.setOnLongClickListener {
+                if(::produto.isInitialized) {
+                    mostraMenuPopup(it)
+                    true
+                } else {
+                    false
                 }
             }
         }
@@ -50,6 +64,29 @@ class ListaProdutosAdapter(
 
             imagem.tentaCarregarImagem(this.produto.imagem)
 
+        }
+
+        private fun mostraMenuPopup(view: View) {
+            val popupMenu = PopupMenu(context, view)
+            val inflater: MenuInflater = popupMenu.menuInflater
+            inflater.inflate(R.menu.menu_detalhes_produto, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener(this)
+            popupMenu.show()
+        }
+
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            when (item.itemId) {
+                R.id.menu_detalhes_produto_editar -> {
+                    quandoClicaEmEditar(produto)
+                    return true
+                }
+                R.id.menu_detalhes_produto_deletar -> {
+                    quandoClicaEmRemover(produto)
+                    return true
+                }
+            }
+
+            return false
         }
     }
 
