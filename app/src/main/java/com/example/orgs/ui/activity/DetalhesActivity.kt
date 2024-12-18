@@ -2,7 +2,10 @@ package com.example.orgs.ui.activity
 
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.example.orgs.R
 import com.example.orgs.extensions.formataParaMoedaBrasileira
 import com.example.orgs.constantes.CHAVE_PRODUTO
 import com.example.orgs.databinding.ActivityDetalhesBinding
@@ -37,5 +40,22 @@ class DetalhesActivity : AppCompatActivity() {
             activityDetalhesTituloDetalhes.text = produtoCarregado.descricao
             activityDetalhesValorText.text = produtoCarregado.valor.formataParaMoedaBrasileira()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_detalhes_produto_editar -> {
+                finish()
+            }
+            R.id.menu_detalhes_produto_deletar -> {
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
