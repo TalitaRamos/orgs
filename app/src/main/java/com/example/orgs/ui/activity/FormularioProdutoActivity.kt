@@ -49,6 +49,8 @@ class FormularioProdutoActivity : AppCompatActivity() {
             title = "Alterar Produto"
             
             idProduto = produtoCarregado.id
+            url = produtoCarregado.imagem
+
             binding.formularioProdutoImagem.tentaCarregarImagem(produtoCarregado.imagem)
             binding.formularioNome.setText(produtoCarregado.nome)
             binding.formularioDescricao.setText(produtoCarregado.descricao)
@@ -67,7 +69,11 @@ class FormularioProdutoActivity : AppCompatActivity() {
         val botaoSalvar = binding.botaoSalvar
         botaoSalvar.setOnClickListener {
             val produto = criaProduto(campoNome, campoDescricao, campoValor)
-            produtoDao.salva(produto)
+            if(idProduto > 0) {
+                produtoDao.update(produto)
+            } else {
+                produtoDao.salva(produto)
+            }
             finish()
         }
     }
@@ -86,6 +92,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
             BigDecimal(valorTexto)
         }
         return Produto(
+            id = idProduto,
             nome = nome,
             descricao = descricao,
             valor = valor,
