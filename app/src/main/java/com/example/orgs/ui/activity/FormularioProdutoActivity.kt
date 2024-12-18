@@ -1,8 +1,10 @@
 package com.example.orgs.ui.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.example.orgs.constantes.CHAVE_PRODUTO
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.extensions.tentaCarregarImagem
@@ -17,6 +19,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
     }
 
     private var url: String? = null
+    private var idProduto = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +37,22 @@ class FormularioProdutoActivity : AppCompatActivity() {
                 url = imagem
                 binding.formularioProdutoImagem.tentaCarregarImagem(url)
             }
+        }
+
+        val produtoData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(CHAVE_PRODUTO, Produto::class.java)
+        } else {
+            intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)
+        }
+
+        produtoData?.let { produtoCarregado ->
+            title = "Alterar Produto"
+            
+            idProduto = produtoCarregado.id
+            binding.formularioProdutoImagem.tentaCarregarImagem(produtoCarregado.imagem)
+            binding.formularioNome.setText(produtoCarregado.nome)
+            binding.formularioDescricao.setText(produtoCarregado.descricao)
+            binding.formularioValor.setText(produtoCarregado.valor.toPlainString())
         }
     }
 

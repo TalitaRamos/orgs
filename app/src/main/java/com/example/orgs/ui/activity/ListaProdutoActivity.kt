@@ -26,7 +26,10 @@ class ListaProdutoActivity : AppCompatActivity() {
         val produtoDao = db.produtoDao()
 
         adapter.quandoClicaEmEditar = { produto ->
-
+            Intent(this, FormularioProdutoActivity::class.java).apply {
+                putExtra(CHAVE_PRODUTO, produto)
+                startActivity(this)
+            }
         }
 
         adapter.quandoClicaEmRemover = { produto ->
