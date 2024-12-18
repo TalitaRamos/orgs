@@ -8,12 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.orgs.R
 import com.example.orgs.extensions.formataParaMoedaBrasileira
 import com.example.orgs.constantes.CHAVE_PRODUTO
+import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityDetalhesBinding
 import com.example.orgs.model.Produto
 import com.example.orgs.extensions.tentaCarregarImagem
 
 class DetalhesActivity : AppCompatActivity() {
 
+    private lateinit var produto: Produto
     private val binding by lazy {
         ActivityDetalhesBinding.inflate(layoutInflater)
     }
@@ -30,7 +32,10 @@ class DetalhesActivity : AppCompatActivity() {
         } else {
             intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)
         }
-        userData?.let { produtoCarregado -> preencherCampos(produtoCarregado) } ?: finish()
+        userData?.let { produtoCarregado ->
+            produto = produtoCarregado
+            preencherCampos(produtoCarregado)
+        } ?: finish()
     }
 
     private fun preencherCampos(produtoCarregado: Produto) {
@@ -48,12 +53,18 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_detalhes_produto_editar -> {
-                finish()
-            }
-            R.id.menu_detalhes_produto_deletar -> {
-                finish()
+        if (::produto.isInitialized) {
+            val db = AppDatabase.instance(this)
+            val produtoDao = db.produtoDao()
+            when (item.itemId) {
+                R.id.menu_detalhes_produto_editar -> {
+                    finish()
+                }
+
+                R.id.menu_detalhes_produto_deletar -> {
+                    produtoDao.remove(produto)
+                    finish()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
