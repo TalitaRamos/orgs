@@ -112,4 +112,8 @@ class ListaProdutosAdapter(
         notifyDataSetChanged()
     }
 
+    fun remove(produto: Produto) {
+        this.produtos.remove(produto)
+        notifyDataSetChanged()
+    }
 }

@@ -22,13 +22,16 @@ class ListaProdutoActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFab()
         setContentView(binding.root)
+        val db = AppDatabase.instance(this)
+        val produtoDao = db.produtoDao()
 
         adapter.quandoClicaEmEditar = { produto ->
 
         }
 
         adapter.quandoClicaEmRemover = { produto ->
-
+            adapter.remove(produto)
+            produtoDao.remove(produto)
         }
     }
 
