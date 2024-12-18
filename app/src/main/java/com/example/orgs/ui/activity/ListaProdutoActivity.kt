@@ -3,7 +3,7 @@ package com.example.orgs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.orgs.constantes.CHAVE_PRODUTO
+import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityListaProdutoBinding
 import com.example.orgs.model.Produto
@@ -27,7 +27,7 @@ class ListaProdutoActivity : AppCompatActivity() {
 
         adapter.quandoClicaEmEditar = { produto ->
             Intent(this, FormularioProdutoActivity::class.java).apply {
-                putExtra(CHAVE_PRODUTO, produto)
+                putExtra(CHAVE_PRODUTO_ID, produto.id)
                 startActivity(this)
             }
         }
@@ -61,7 +61,7 @@ class ListaProdutoActivity : AppCompatActivity() {
 
     private fun toDetalhesProduto(produto: Produto) {
         val intent = Intent(this, DetalhesActivity::class.java).apply {
-            putExtra(CHAVE_PRODUTO, produto)
+            putExtra(CHAVE_PRODUTO_ID, produto.id)
         }
         startActivity(intent)
     }
