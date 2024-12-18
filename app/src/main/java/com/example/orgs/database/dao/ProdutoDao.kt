@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.example.orgs.model.Produto
 
 @Dao
@@ -17,4 +18,7 @@ interface ProdutoDao {
 
     @Delete
     fun remove(produto: Produto)
+
+    @Update
+    fun update(produto: Produto)
 }
