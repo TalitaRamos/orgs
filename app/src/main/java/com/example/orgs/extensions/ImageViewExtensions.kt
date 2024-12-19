@@ -6,7 +6,7 @@ import com.example.orgs.R
 
 fun ImageView.tentaCarregarImagem(url: String? = null) {
     load(url) {
-        fallback(R.drawable.erro)
+        fallback(R.drawable.imagem_padrao)
         error(R.drawable.erro)
         placeholder(R.drawable.placeholder)
     }
