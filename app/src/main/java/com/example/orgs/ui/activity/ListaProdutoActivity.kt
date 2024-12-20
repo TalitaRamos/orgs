@@ -11,6 +11,7 @@ import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityListaProdutoBinding
 import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -96,34 +97,37 @@ class ListaProdutoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val produtoOrdenado: List<Produto>? = when (item.itemId) {
+                R.id.menu_order_nome_desc ->
+                    produtoDao.buscaTodosOrdenadorPorNomeDesc()
 
-        val produtoOrdenado: List<Produto>? = when (item.itemId) {
-            R.id.menu_order_nome_desc ->
-                produtoDao.buscaTodosOrdenadorPorNomeDesc()
+                R.id.menu_order_nome_asc ->
+                    produtoDao.buscaTodosOrdenadorPorNomeAsc()
 
-            R.id.menu_order_nome_asc ->
-                produtoDao.buscaTodosOrdenadorPorNomeAsc()
+                R.id.menu_order_descricao_desc ->
+                    produtoDao.buscaTodosOrdenadorPorDescricaoDesc()
 
-            R.id.menu_order_descricao_desc ->
-                produtoDao.buscaTodosOrdenadorPorDescricaoDesc()
+                R.id.menu_order_descricao_asc ->
+                    produtoDao.buscaTodosOrdenadorPorDescricaoAsc()
 
-            R.id.menu_order_descricao_asc ->
-                produtoDao.buscaTodosOrdenadorPorDescricaoAsc()
+                R.id.menu_order_valor_desc ->
+                    produtoDao.buscaTodosOrdenadorPorValorDesc()
 
-            R.id.menu_order_valor_desc ->
-                produtoDao.buscaTodosOrdenadorPorValorDesc()
+                R.id.menu_order_valor_asc ->
+                    produtoDao.buscaTodosOrdenadorPorValorAsc()
 
-            R.id.menu_order_valor_asc ->
-                produtoDao.buscaTodosOrdenadorPorValorAsc()
+                R.id.menu_order_padrao ->
+                    produtoDao.buscaTodos()
 
-            R.id.menu_order_padrao ->
-                produtoDao.buscaTodos()
-
-            else -> null
-        }
-
-        produtoOrdenado?.let {
-            adapter.atualiza(produtoOrdenado)
+                else -> null
+            }
+            withContext(Dispatchers.Main) {
+                produtoOrdenado?.let {
+                    adapter.atualiza(produtoOrdenado)
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item)
