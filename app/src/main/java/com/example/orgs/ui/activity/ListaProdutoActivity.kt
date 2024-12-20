@@ -28,6 +28,7 @@ class ListaProdutoActivity : AppCompatActivity() {
     private val produtoDao by lazy {
         AppDatabase.instance(this).produtoDao()
     }
+    private val scope = MainScope()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,26 +36,34 @@ class ListaProdutoActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFab()
         setContentView(binding.root)
-        val db = AppDatabase.instance(this)
-        val produtoDao = db.produtoDao()
 
+        toEditarProduto()
+        removerProduto()
+    }
+
+    private fun removerProduto() {
+        adapter.quandoClicaEmRemover = { produto ->
+            scope.launch {
+                adapter.remove(produto)
+                withContext(Dispatchers.IO) {
+                    produtoDao.remove(produto)
+                }
+            }
+        }
+    }
+
+    private fun toEditarProduto() {
         adapter.quandoClicaEmEditar = { produto ->
             Intent(this, FormularioProdutoActivity::class.java).apply {
                 putExtra(CHAVE_PRODUTO_ID, produto.id)
                 startActivity(this)
             }
         }
-
-        adapter.quandoClicaEmRemover = { produto ->
-            adapter.remove(produto)
-            produtoDao.remove(produto)
-        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        val scope = MainScope()
         scope.launch {
             val produtos = withContext(Dispatchers.IO) {
                 produtoDao.buscaTodos()
