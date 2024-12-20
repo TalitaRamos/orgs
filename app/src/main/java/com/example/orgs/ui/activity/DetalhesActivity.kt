@@ -12,6 +12,11 @@ import com.example.orgs.databinding.ActivityDetalhesBinding
 import com.example.orgs.extensions.formataParaMoedaBrasileira
 import com.example.orgs.extensions.tentaCarregarImagem
 import com.example.orgs.model.Produto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetalhesActivity : AppCompatActivity() {
 
@@ -23,6 +28,7 @@ class DetalhesActivity : AppCompatActivity() {
     private val produtoDao by lazy {
         AppDatabase.instance(this).produtoDao()
     }
+    private val scope = CoroutineScope(IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +42,14 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun buscaProduto() {
-        produto = produtoDao.buscaPorId(produtoId)
-
-        produto?.let {
-            preencherCampos(it)
-        } ?: finish()
+        scope.launch {
+            produto = produtoDao.buscaPorId(produtoId)
+            withContext(Main) {
+                produto?.let {
+                    preencherCampos(it)
+                } ?: finish()
+            }
+        }
     }
 
     private fun tentaCarregarProduto() {
@@ -62,8 +71,6 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val db = AppDatabase.instance(this)
-        val produtoDao = db.produtoDao()
         when (item.itemId) {
             R.id.menu_detalhes_produto_editar -> {
                 Intent(this, FormularioProdutoActivity::class.java).apply {
@@ -73,9 +80,11 @@ class DetalhesActivity : AppCompatActivity() {
             }
 
             R.id.menu_detalhes_produto_deletar -> {
-                produto?.let {
-                    produtoDao.remove(it)
-                    finish()
+                scope.launch {
+                    produto?.let {
+                        produtoDao.remove(it)
+                        finish()
+                    }
                 }
             }
         }

@@ -11,6 +11,10 @@ import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityListaProdutoBinding
 import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ListaProdutoActivity : AppCompatActivity() {
 
@@ -26,6 +30,7 @@ class ListaProdutoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         configuraRecyclerView()
         configuraFab()
         setContentView(binding.root)
@@ -48,7 +53,13 @@ class ListaProdutoActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        adapter.atualiza(produtoDao.buscaTodos())
+        val scope = MainScope()
+        scope.launch {
+            val produtos = withContext(Dispatchers.IO) {
+                produtoDao.buscaTodos()
+            }
+            adapter.atualiza(produtos)
+        }
     }
 
     private fun configuraFab() {
