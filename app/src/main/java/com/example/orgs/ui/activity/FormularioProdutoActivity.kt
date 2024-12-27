@@ -2,17 +2,14 @@ package com.example.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.extensions.tentaCarregarImagem
 import com.example.orgs.model.Produto
 import com.example.orgs.ui.dialog.FormularioImagemDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity() {
@@ -27,7 +24,6 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private var url: String? = null
     private var produtoId = 0L
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,12 +49,10 @@ class FormularioProdutoActivity : AppCompatActivity() {
     }
 
     private fun tentaBuscarProduto() {
-        scope.launch {
+        lifecycleScope.launch {
             produtoDao.buscaPorId(produtoId)?.let {
-                withContext(Main) {
-                    title = "Alterar Produto"
-                    preencheCampos(it)
-                }
+                title = "Alterar Produto"
+                preencheCampos(it)
             }
         }
     }
@@ -79,7 +73,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.botaoSalvar
         botaoSalvar.setOnClickListener {
-            scope.launch {
+            lifecycleScope.launch {
                 val produto = criaProduto()
                 produtoDao.salva(produto)
                 finish()

@@ -14,9 +14,7 @@ import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ListaProdutoActivity : AppCompatActivity() {
@@ -30,8 +28,6 @@ class ListaProdutoActivity : AppCompatActivity() {
     private val produtoDao by lazy {
         AppDatabase.instance(this).produtoDao()
     }
-    private val scope = MainScope()
-    private val job = Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +42,9 @@ class ListaProdutoActivity : AppCompatActivity() {
 
     private fun removerProduto() {
         adapter.quandoClicaEmRemover = { produto ->
-            scope.launch {
+            lifecycleScope.launch {
                 adapter.remove(produto)
-                withContext(Dispatchers.IO) {
-                    produtoDao.remove(produto)
-                }
+                produtoDao.remove(produto)
             }
         }
     }
