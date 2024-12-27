@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.orgs.R
 import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
@@ -13,6 +14,7 @@ import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,6 +31,7 @@ class ListaProdutoActivity : AppCompatActivity() {
         AppDatabase.instance(this).produtoDao()
     }
     private val scope = MainScope()
+    private val job = Job()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,10 +67,8 @@ class ListaProdutoActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        scope.launch {
-            val produtos = withContext(Dispatchers.IO) {
-                produtoDao.buscaTodos()
-            }
+        lifecycleScope.launch {
+            val produtos =  produtoDao.buscaTodos()
             adapter.atualiza(produtos)
         }
     }
