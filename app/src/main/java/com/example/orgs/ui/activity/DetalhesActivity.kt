@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.orgs.R
 import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
@@ -12,6 +13,7 @@ import com.example.orgs.databinding.ActivityDetalhesBinding
 import com.example.orgs.extensions.formataParaMoedaBrasileira
 import com.example.orgs.extensions.tentaCarregarImagem
 import com.example.orgs.model.Produto
+import kotlinx.coroutines.launch
 
 class DetalhesActivity : AppCompatActivity() {
 
@@ -36,11 +38,12 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     private fun buscaProduto() {
-        produto = produtoDao.buscaPorId(produtoId)
-
-        produto?.let {
-            preencherCampos(it)
-        } ?: finish()
+        lifecycleScope.launch {
+            produto = produtoDao.buscaPorId(produtoId)
+            produto?.let {
+                preencherCampos(it)
+            } ?: finish()
+        }
     }
 
     private fun tentaCarregarProduto() {
@@ -62,8 +65,6 @@ class DetalhesActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val db = AppDatabase.instance(this)
-        val produtoDao = db.produtoDao()
         when (item.itemId) {
             R.id.menu_detalhes_produto_editar -> {
                 Intent(this, FormularioProdutoActivity::class.java).apply {
@@ -73,9 +74,11 @@ class DetalhesActivity : AppCompatActivity() {
             }
 
             R.id.menu_detalhes_produto_deletar -> {
-                produto?.let {
-                    produtoDao.remove(it)
-                    finish()
+                lifecycleScope.launch {
+                    produto?.let {
+                        produtoDao.remove(it)
+                        finish()
+                    }
                 }
             }
         }
