@@ -7,7 +7,6 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.orgs.R
-import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityDetalhesBinding
 import com.example.orgs.extensions.formataParaMoedaBrasileira
@@ -15,15 +14,16 @@ import com.example.orgs.extensions.tentaCarregarImagem
 import com.example.orgs.model.Produto
 import kotlinx.coroutines.launch
 
-class DetalhesActivity : AppCompatActivity() {
+class DetalhesProdutoActivity : AppCompatActivity() {
 
     private var produtoId: Long = 0L
     private var produto: Produto? = null
+
     private val binding by lazy {
         ActivityDetalhesBinding.inflate(layoutInflater)
     }
     private val produtoDao by lazy {
-        AppDatabase.instance(this).produtoDao()
+        AppDatabase.instancia(this).produtoDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +39,12 @@ class DetalhesActivity : AppCompatActivity() {
 
     private fun buscaProduto() {
         lifecycleScope.launch {
-            produto = produtoDao.buscaPorId(produtoId)
-            produto?.let {
-                preencherCampos(it)
-            } ?: finish()
+            produtoDao.buscaPorId(produtoId).collect { produtoEncontrado ->
+                produto = produtoEncontrado
+                produto?.let {
+                    preencherCampos(it)
+                } ?: finish()
+            }
         }
     }
 
@@ -74,8 +76,8 @@ class DetalhesActivity : AppCompatActivity() {
             }
 
             R.id.menu_detalhes_produto_deletar -> {
-                lifecycleScope.launch {
-                    produto?.let {
+                produto?.let {
+                    lifecycleScope.launch {
                         produtoDao.remove(it)
                         finish()
                     }

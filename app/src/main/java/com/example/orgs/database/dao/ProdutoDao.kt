@@ -7,12 +7,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.orgs.model.Produto
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProdutoDao {
 
     @Query("SELECT * FROM Produto")
-    suspend fun buscaTodos(): List<Produto>
+    fun buscaTodos(): Flow<List<Produto>>
+
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId")
+    fun buscaTodosByUsuario(usuarioId: String): Flow<List<Produto>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun salva(vararg produto: Produto)
@@ -21,7 +25,7 @@ interface ProdutoDao {
     suspend fun remove(produto: Produto)
 
     @Query("SELECT * FROM Produto WHERE id = :id")
-    suspend fun  buscaPorId(id: Long): Produto?
+    fun buscaPorId(id: Long): Flow<Produto?>
 
     @Query("SELECT * FROM Produto ORDER BY nome ASC")
     suspend fun buscaTodosOrdenadorPorNomeAsc(): List<Produto>

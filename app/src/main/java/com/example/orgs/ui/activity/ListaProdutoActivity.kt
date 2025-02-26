@@ -6,18 +6,20 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import br.com.alura.orgs.ui.activity.UsuarioBaseActivity
 import com.example.orgs.R
-import com.example.orgs.constantes.CHAVE_PRODUTO_ID
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityListaProdutoBinding
+import com.example.orgs.extensions.vaiPara
 import com.example.orgs.model.Produto
 import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
- import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ListaProdutoActivity : AppCompatActivity() {
+class ListaProdutoActivity : UsuarioBaseActivity() {
 
     private val adapter = ListaProdutosAdapter(context = this)
 
@@ -26,7 +28,7 @@ class ListaProdutoActivity : AppCompatActivity() {
     }
 
     private val produtoDao by lazy {
-        AppDatabase.instance(this).produtoDao()
+        AppDatabase.instancia(this).produtoDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,22 @@ class ListaProdutoActivity : AppCompatActivity() {
 
         toEditarProduto()
         removerProduto()
+
+        lifecycleScope.launch {
+            launch {
+                usuario
+                    .filterNotNull()
+                    .collect { usuario ->
+                        buscaProdutosUsuario(usuarioId = usuario.id)
+                    }
+            }
+        }
+    }
+
+    private suspend fun buscaProdutosUsuario(usuarioId: String) {
+        produtoDao.buscaTodosByUsuario(usuarioId = usuarioId).collect { produtos ->
+            adapter.atualiza(produtos)
+        }
     }
 
     private fun removerProduto() {
@@ -61,10 +79,6 @@ class ListaProdutoActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        lifecycleScope.launch {
-            val produtos =  produtoDao.buscaTodos()
-            adapter.atualiza(produtos)
-        }
     }
 
     private fun configuraFab() {
@@ -81,7 +95,7 @@ class ListaProdutoActivity : AppCompatActivity() {
     }
 
     private fun toDetalhesProduto(produto: Produto) {
-        val intent = Intent(this, DetalhesActivity::class.java).apply {
+        val intent = Intent(this, DetalhesProdutoActivity::class.java).apply {
             putExtra(CHAVE_PRODUTO_ID, produto.id)
         }
         startActivity(intent)
@@ -101,6 +115,14 @@ class ListaProdutoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.menu_lista_produtos_sair_app -> {
+                abrirTelaDePerfil()
+                return true
+            }
+        }
+
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             val produtoOrdenado: List<Produto>? = when (item.itemId) {
@@ -122,8 +144,8 @@ class ListaProdutoActivity : AppCompatActivity() {
                 R.id.menu_order_valor_asc ->
                     produtoDao.buscaTodosOrdenadorPorValorAsc()
 
-                R.id.menu_order_padrao ->
-                    produtoDao.buscaTodos()
+//                R.id.menu_order_padrao ->
+//                    produtoDao.buscaTodos()
 
                 else -> null
             }
@@ -135,5 +157,9 @@ class ListaProdutoActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun abrirTelaDePerfil() {
+        vaiPara(PerfilUsuarioActivity::class.java)
     }
 }

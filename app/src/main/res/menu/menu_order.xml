@@ -39,4 +39,9 @@
         </menu>
     </item>
 
+    <item
+        android:id="@+id/menu_lista_produtos_sair_app"
+        android:icon="@drawable/ic_perfil_usuario"
+        android:title="Perfil do usuário"
+        app:showAsAction="ifRoom" />
 </menu>

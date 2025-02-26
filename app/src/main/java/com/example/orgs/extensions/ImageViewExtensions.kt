@@ -4,9 +4,12 @@ import android.widget.ImageView
 import coil.load
 import com.example.orgs.R
 
-fun ImageView.tentaCarregarImagem(url: String? = null) {
+fun ImageView.tentaCarregarImagem(
+    url: String? = null,
+    fallback: Int = R.drawable.imagem_padrao
+){
     load(url) {
-        fallback(R.drawable.imagem_padrao)
+        fallback(fallback)
         error(R.drawable.erro)
         placeholder(R.drawable.placeholder)
     }

@@ -4,37 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".ui.activity.FormularioProdutoActivity">
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/formulario_produto_imagem"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/imagem_padrao"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/imagem_padrao" />
-
+        android:layout_height="wrap_content"
+        tools:context=".ui.activity.FormularioCadastroUsuarioActivity">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/formulario_textinputlayout_nome"
+            android:id="@+id/textInputLayout_usuario"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/formulario_produto_imagem">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/formulario_nome"
+                android:id="@+id/activity_formulario_cadastro_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Usuário"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputlayout_nome"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@id/textInputLayout_usuario"
+            app:layout_constraintStart_toStartOf="@id/textInputLayout_usuario"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayout_usuario">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_formulario_cadastro_nome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nome"
@@ -42,54 +48,34 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/formulario_textinputlayout_descricao"
+            android:id="@+id/textInputlayout_senha"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/formulario_textinputlayout_nome">
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@id/textInputlayout_nome"
+            app:layout_constraintStart_toStartOf="@id/textInputlayout_nome"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_nome">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/formulario_descricao"
+                android:id="@+id/activity_formulario_cadastro_senha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descricao"
-                android:inputType="text" />
+                android:hint="Senha"
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/formulario_textinputlayout_valor"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/formulario_textinputlayout_descricao">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/formulario_valor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Valor"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <Button
-            android:id="@+id/botaoSalvar"
+            android:id="@+id/activity_formulario_cadastro_botao_cadastrar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Salvar"
+            android:layout_marginTop="16dp"
+            android:text="Cadastrar"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/formulario_textinputlayout_valor"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintEnd_toEndOf="@id/textInputlayout_senha"
+            app:layout_constraintStart_toStartOf="@id/textInputlayout_senha"
+            app:layout_constraintTop_toBottomOf="@id/textInputlayout_senha"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

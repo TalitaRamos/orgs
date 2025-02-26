@@ -15,7 +15,16 @@
         android:theme="@style/Theme.Orgs"
         tools:targetApi="31">
         <activity
-            android:name=".ui.activity.DetalhesActivity"
+            android:name=".ui.activity.PerfilUsuarioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.FormularioCadastroUsuarioActivity"
+            android:label="Cadastrar usuário" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:theme="@style/Theme.Orgs.NoActionBar" />
+        <activity
+            android:name=".ui.activity.DetalhesProdutoActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activity.ListaProdutoActivity"

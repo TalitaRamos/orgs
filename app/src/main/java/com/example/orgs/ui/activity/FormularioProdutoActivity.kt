@@ -1,9 +1,8 @@
 package com.example.orgs.ui.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.orgs.constantes.CHAVE_PRODUTO_ID
+import br.com.alura.orgs.ui.activity.UsuarioBaseActivity
 import com.example.orgs.database.AppDatabase
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.extensions.tentaCarregarImagem
@@ -12,14 +11,14 @@ import com.example.orgs.ui.dialog.FormularioImagemDialog
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class FormularioProdutoActivity : AppCompatActivity() {
+class FormularioProdutoActivity : UsuarioBaseActivity() {
 
     private val binding by lazy {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
     }
 
     private val produtoDao by lazy {
-        AppDatabase.instance(this).produtoDao()
+        AppDatabase.instancia(this).produtoDao()
     }
 
     private var url: String? = null
@@ -50,9 +49,11 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private fun tentaBuscarProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId)?.let {
-                title = "Alterar Produto"
-                preencheCampos(it)
+            produtoDao.buscaPorId(produtoId).collect {
+                it?.let { produtoEncontrado ->
+                    title = "Alterar produto"
+                    preencheCampos(produtoEncontrado)
+                }
             }
         }
     }
@@ -72,17 +73,20 @@ class FormularioProdutoActivity : AppCompatActivity() {
 
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.botaoSalvar
+
         botaoSalvar.setOnClickListener {
             lifecycleScope.launch {
-                val produto = criaProduto()
-                produtoDao.salva(produto)
-                finish()
+                usuario.value?.let{ usuario ->
+                    val produtoNovo = criaProduto(usuario.id)
+                    produtoDao.salva(produtoNovo)
+                    finish()
+                }
             }
         }
     }
 
-    private fun criaProduto(
-    ): Produto {
+    private fun criaProduto(usuarioId: String): Produto {
+
         val nome = binding.formularioNome.text.toString()
         val descricao = binding.formularioDescricao.text.toString()
         val valorTexto = binding.formularioValor.text.toString()
@@ -96,7 +100,8 @@ class FormularioProdutoActivity : AppCompatActivity() {
             nome = nome,
             descricao = descricao,
             valor = valor,
-            imagem = url
+            imagem = url,
+            usuarioId = usuarioId
         )
     }
 }
