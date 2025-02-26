@@ -16,6 +16,7 @@ import com.example.orgs.ui.recycler.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -119,40 +120,48 @@ class ListaProdutoActivity : UsuarioBaseActivity() {
         when (item.itemId) {
             R.id.menu_lista_produtos_sair_app -> {
                 abrirTelaDePerfil()
-                return true
+            }
+            R.id.menu_lista_produtos_todos_produtos -> {
+                vaiPara(TodosProdutosActivity::class.java)
             }
         }
 
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            val produtoOrdenado: List<Produto>? = when (item.itemId) {
-                R.id.menu_order_nome_desc ->
-                    produtoDao.buscaTodosOrdenadorPorNomeDesc()
+        lifecycleScope.launch {
+            launch {
+                usuario
+                    .filterNotNull()
+                    .collect { usuario ->
+                        val produtoOrdenado: List<Produto>? = when (item.itemId) {
+                            R.id.menu_order_nome_desc ->
+                                produtoDao.buscaTodosOrdenadorPorNomeDesc(usuarioId = usuario.id).first()
 
-                R.id.menu_order_nome_asc ->
-                    produtoDao.buscaTodosOrdenadorPorNomeAsc()
+                            R.id.menu_order_nome_asc ->
+                                produtoDao.buscaTodosOrdenadorPorNomeAsc(usuarioId = usuario.id).first()
 
-                R.id.menu_order_descricao_desc ->
-                    produtoDao.buscaTodosOrdenadorPorDescricaoDesc()
+                            R.id.menu_order_descricao_desc ->
+                                produtoDao.buscaTodosOrdenadorPorDescricaoDesc(usuarioId = usuario.id).first()
 
-                R.id.menu_order_descricao_asc ->
-                    produtoDao.buscaTodosOrdenadorPorDescricaoAsc()
+                            R.id.menu_order_descricao_asc ->
+                                produtoDao.buscaTodosOrdenadorPorDescricaoAsc(usuarioId = usuario.id).first()
 
-                R.id.menu_order_valor_desc ->
-                    produtoDao.buscaTodosOrdenadorPorValorDesc()
+                            R.id.menu_order_valor_desc ->
+                                produtoDao.buscaTodosOrdenadorPorValorDesc(usuarioId = usuario.id).first()
 
-                R.id.menu_order_valor_asc ->
-                    produtoDao.buscaTodosOrdenadorPorValorAsc()
+                            R.id.menu_order_valor_asc ->
+                                produtoDao.buscaTodosOrdenadorPorValorAsc(usuarioId = usuario.id).first()
 
-//                R.id.menu_order_padrao ->
-//                    produtoDao.buscaTodos()
+                            R.id.menu_order_padrao ->
+                                produtoDao.buscaTodosByUsuario(usuarioId = usuario.id).first()
 
-                else -> null
-            }
-            withContext(Dispatchers.Main) {
-                produtoOrdenado?.let {
-                    adapter.atualiza(produtoOrdenado)
-                }
+                            else -> null
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            produtoOrdenado?.let {
+                                adapter.atualiza(produtoOrdenado)
+                            }
+                        }
+                    }
             }
         }
 

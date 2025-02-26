@@ -27,16 +27,16 @@ interface ProdutoDao {
     @Query("SELECT * FROM Produto WHERE id = :id")
     fun buscaPorId(id: Long): Flow<Produto?>
 
-    @Query("SELECT * FROM Produto ORDER BY nome ASC")
-    suspend fun buscaTodosOrdenadorPorNomeAsc(): List<Produto>
-    @Query("SELECT * FROM Produto ORDER BY nome DESC")
-    suspend fun buscaTodosOrdenadorPorNomeDesc(): List<Produto>
-    @Query("SELECT * FROM Produto ORDER BY descricao ASC")
-    suspend fun buscaTodosOrdenadorPorDescricaoAsc(): List<Produto>
-    @Query("SELECT * FROM Produto ORDER BY descricao DESC")
-    suspend fun buscaTodosOrdenadorPorDescricaoDesc(): List<Produto>
-    @Query("SELECT * FROM Produto ORDER BY valor ASC")
-    suspend fun buscaTodosOrdenadorPorValorAsc(): List<Produto>
-    @Query("SELECT * FROM Produto ORDER BY valor DESC")
-    suspend fun buscaTodosOrdenadorPorValorDesc(): List<Produto>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY nome ASC ")
+    fun buscaTodosOrdenadorPorNomeAsc(usuarioId: String): Flow<List<Produto>>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY nome DESC")
+    fun buscaTodosOrdenadorPorNomeDesc(usuarioId: String): Flow<List<Produto>>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY descricao ASC")
+    fun buscaTodosOrdenadorPorDescricaoAsc(usuarioId: String): Flow<List<Produto>>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY descricao DESC")
+    fun buscaTodosOrdenadorPorDescricaoDesc(usuarioId: String): Flow<List<Produto>>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY valor ASC")
+    fun buscaTodosOrdenadorPorValorAsc(usuarioId: String): Flow<List<Produto>>
+    @Query("SELECT * FROM Produto WHERE usuarioId = :usuarioId ORDER BY valor DESC")
+    fun buscaTodosOrdenadorPorValorDesc(usuarioId: String): Flow<List<Produto>>
 }
