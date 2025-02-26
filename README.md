@@ -11,7 +11,7 @@ V1: O App lista produtos com imagem, título, descrição e valor. Também, é p
 
 V2: O projeto permite cadastrar, alterar e remover produtos do banco de dados local. Os produtos salvos são apresentados em uma lista e podem ser visualizados ao realizar o clique. É também possível ordenar os produtos da lista
 
-V2: O projeto permite cadastrar usuários, logar ao informar usuário e senha, listar somente os produtos do usuário, listar todos os produtos, deslogar o usuário, salvar sessão de login.
+V3: O projeto permite cadastrar usuários, logar ao informar usuário e senha, listar somente os produtos do usuário, listar todos os produtos, deslogar o usuário, salvar sessão de login.
 
 ## Aprendizados
 
